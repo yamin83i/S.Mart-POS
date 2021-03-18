@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Text, View, StyleSheet, TouchableOpacity, Image,ToastAndroid} from 'react-native';
+import {Text, View, StyleSheet, TouchableOpacity, Image,ToastAndroid, ScrollView,RefreshControl} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from "@react-native-async-storage/async-storage"
 
@@ -8,7 +8,8 @@ export class HomeS extends Component {
     data:{},
     token:"",
     roles:"",
-    saldo:""
+    saldo:"",
+refresh:false
 }
 
 componentDidMount(){
@@ -16,6 +17,7 @@ componentDidMount(){
         if (token != null) {
           console.log(token);
           this.setState({token: token}, () => this.getprofile());
+          this.setState({refresh: false});
         } else {
           alert('anda belum login');
         }
@@ -54,7 +56,16 @@ getprofile(){
 
   render() {
     return (
-      <View style={{flex: 1}}>
+      <ScrollView style={{flex: 1}} 
+      refreshControl={
+        <RefreshControl
+          refreshing={this.state.refresh}
+          onRefresh={() => {
+            this.setState({refresh: true});
+            this.componentDidMount();
+          }}
+        />
+      }>
         <View style={styles.header}>
           <View
             style={{
@@ -141,7 +152,7 @@ getprofile(){
             <Text>Pengeluaran </Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </ScrollView>
     );
   }
 }

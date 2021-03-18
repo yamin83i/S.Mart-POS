@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Text, View, StyleSheet, TouchableOpacity, Image,ToastAndroid} from 'react-native';
+import {Text, View, StyleSheet, TouchableOpacity, Image,ToastAndroid,ScrollView,RefreshControl} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import _ from 'lodash';
 
@@ -10,6 +10,7 @@ export class HomeP extends Component {
     token: '',
     roles: '',
     saldo: '',
+    refresh:false
   };
 
   componentDidMount() {
@@ -19,6 +20,8 @@ export class HomeP extends Component {
         this.setState({token: token})
         this.getkeuangan()
         this.getprofile()
+        this.setState({refresh: false});
+
       } else {
         alert('anda belum login');
       }
@@ -91,7 +94,16 @@ export class HomeP extends Component {
 
   render() {
     return (
-      <View style={{flex: 1}}>
+      <ScrollView style={{flex: 1}}
+      refreshControl={
+        <RefreshControl
+          refreshing={this.state.refresh}
+          onRefresh={() => {
+            this.setState({refresh: true});
+            this.componentDidMount();
+          }}
+        />
+      }>
         <View style={styles.header}>
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
             <View>
@@ -173,7 +185,7 @@ export class HomeP extends Component {
             <Text>Rp. {this.toPrice(this.state.data.total_pendapatan)}</Text>
           </View>
         </View>
-      </View>
+      </ScrollView>
     );
   }
 }

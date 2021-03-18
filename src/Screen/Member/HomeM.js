@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Text, View, StyleSheet,TouchableOpacity,Image,ToastAndroid} from 'react-native';
+import {Text, View, StyleSheet,TouchableOpacity,Image,ToastAndroid,ScrollView,RefreshControl} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import _ from 'lodash';
@@ -10,7 +10,8 @@ export class HomeM extends Component {
     data:{},
     token:"",
     roles:"",
-    saldo:""
+    saldo:"",
+    refresh:false
 }
 
 componentDidMount(){
@@ -18,6 +19,8 @@ componentDidMount(){
         if (token != null) {
           console.log(token);
           this.setState({token: token}, () => this.getprofile());
+          this.setState({refresh: false});
+
         } else {
           alert('anda belum login');
         }
@@ -86,7 +89,16 @@ toPrice(price) {
 
   render() {
     return (
-      <View style={{flex: 1}}>
+      <ScrollView style={{flex: 1}} 
+      refreshControl={
+        <RefreshControl
+          refreshing={this.state.refresh}
+          onRefresh={() => {
+            this.setState({refresh: true});
+            this.componentDidMount();
+          }}
+        />
+      }>
         <View style={styles.header}>
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
             <View >
@@ -134,7 +146,7 @@ toPrice(price) {
                    <Text style={{color:"#2994ff",fontSize:18}}>dan </Text>
                    <Text style={{color:"#2994ff",fontSize:18}}>Keinginanmu</Text>
           </View>
-      </View>
+      </ScrollView>
     );
   }
 }
